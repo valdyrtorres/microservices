@@ -14,9 +14,9 @@ Criar Cliente - POST:
 Exemplo de Body (JSON):
 
 {
-	"nome": "Manuel Neuer",
-	"CPF": "11111111112",
-	"endereco": "Rua das Marrecas, 42, CEP: 22222-220, Rio de Janeiro, RJ - Brasil"
+	"nome": "mouse",
+	"estoque": 150,
+	"preco": 5
 }
 
 Swagger:
