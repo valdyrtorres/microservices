@@ -18,3 +18,6 @@ Exemplo de Body (JSON):
 	"CPF": "11111111112",
 	"endereco": "Rua das Marrecas, 42, CEP: 22222-220, Rio de Janeiro, RJ - Brasil"
 }
+
+Swagger:
+http://localhost:8081/crud/swagger-ui/
