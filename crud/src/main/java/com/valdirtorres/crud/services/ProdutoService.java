@@ -10,20 +10,25 @@ import org.springframework.stereotype.Service;
 import com.valdirtorres.crud.data.vo.ProdutoVO;
 import com.valdirtorres.crud.entity.Produto;
 import com.valdirtorres.crud.exception.ResourceNotFoundException;
+import com.valdirtorres.crud.message.ProdutoSendMessage;
 import com.valdirtorres.crud.repository.ProdutoRepository;
 
 @Service
 public class ProdutoService {
 	private final ProdutoRepository produtoRepository;
+	private final ProdutoSendMessage produtoSendMessage;
 
 	@Autowired
-	public ProdutoService(ProdutoRepository produtoRepository) {
+	public ProdutoService(ProdutoRepository produtoRepository, ProdutoSendMessage produtoSendMessage) {
 		this.produtoRepository = produtoRepository;
+		this.produtoSendMessage = produtoSendMessage;
 	}
 	
 	public ProdutoVO create(ProdutoVO produtoVO) {
-		ProdutoVO produtoVoRetorno = ProdutoVO.create(produtoRepository.save(Produto.create(produtoVO)));
-		return produtoVoRetorno;
+		ProdutoVO proVoRetorno = ProdutoVO.create(produtoRepository.save(Produto.create(produtoVO)));
+		// Envio para a fila fazendo a comunicação assíncrona com o microserviço de pagamento
+		produtoSendMessage.sendMessage(proVoRetorno);
+		return proVoRetorno;
 	}
 	
 	public Page<ProdutoVO> findAll(Pageable pageable) {
@@ -41,6 +46,7 @@ public class ProdutoService {
 		return ProdutoVO.create(entity);
 	}
 	
+	// TODO Fazer o envio para a fila
 	public ProdutoVO update(ProdutoVO produtoVO) {
 		final Optional<Produto> optionalProduto = produtoRepository.findById(produtoVO.getId());
 		
@@ -51,6 +57,7 @@ public class ProdutoService {
 		return ProdutoVO.create(produtoRepository.save(Produto.create(produtoVO)));
 	}
 	
+	// TODO Fazer o envio para a fila
 	public void delete(Long id) {
 		var entity = produtoRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
